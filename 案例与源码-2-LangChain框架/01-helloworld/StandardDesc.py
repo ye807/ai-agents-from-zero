@@ -10,7 +10,7 @@
 
 补充说明：
 - 为了让工程化示例更直观，这里继续使用很多同学在旧资料里更常见的 `ChatOpenAI` 写法；若你想看 1.x 统一入口，请对照同目录下的 `LangChainV1.0.py`。
-- 当前脚本使用的是“阿里百炼兼容端点 + DeepSeek 模型”这组组合，重点仍然是学习工程化写法，而不是限定某一个具体模型。
+- 当前脚本使用的是"阿里百炼兼容端点 + DeepSeek 模型"这组组合，重点仍然是学习工程化写法，而不是限定某一个具体模型。
 """
 
 # ========== 1. 导入与环境 ==========
@@ -57,15 +57,15 @@ def init_llm_client() -> ChatOpenAI:
         ChatOpenAI: 初始化好的「对话客户端」，可以对其调用 .invoke(问题) 或 .stream(问题)。
     """
     # 从环境变量里拿 API 密钥；没配置的话直接报错，提示去检查 .env。
-    api_key = os.getenv("QWEN_API_KEY")
+    api_key = os.getenv("deepseek-api")
     if not api_key:
-        raise ValueError("环境变量 QWEN_API_KEY 未配置，请检查 .env 文件")
+        raise ValueError("环境变量 deepseek-api 未配置，请检查 .env 文件")
 
     # 创建客户端：指定用哪个模型、密钥、接口地址，以及「回复风格」相关参数。
     llm = ChatOpenAI(
-        model="deepseek-v3.2",  # 模型名称（这里演示的是“DeepSeek 模型 + 阿里百炼兼容接口”）
+        model="deepseek-chat",  # DeepSeek 对话模型
         api_key=api_key,
-        base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",  # 阿里云提供的兼容 OpenAI 的地址
+        base_url="https://api.deepseek.com",  # DeepSeek 原生 API 地址
         temperature=0.7,  # 控制「随机程度」：0 更确定、重复性高；1 更随机、更有创意。一般 0.5～0.8 即可。
         max_tokens=2048,  # 单次回复最多生成多少个 token（约等于字数），防止回复过长或超限。
     )
@@ -144,12 +144,12 @@ if __name__ == "__main__":
 2026-03-26 17:31:04,798 - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
 LangChain 是一个用于开发大语言模型（LLM）应用的开源框架。它核心解决了LLM应用中的两大问题：**数据实时性**（LLM训练数据可能过时）和**领域局限性**（缺乏特定领域知识）。
 
-其核心思想是通过“链”式设计，将LLM与外部数据源和工具连接起来，构建功能更强的应用。主要组件包括：
+其核心思想是通过"链"式设计，将LLM与外部数据源和工具连接起来，构建功能更强的应用。主要组件包括：
 *   **模型**：兼容多种LLM（如GPT、Claude等）。
 *   **提示模板**：管理并优化与LLM的交互提示。
 *   **数据检索**：能从外部文档、数据库、网络等获取实时信息。
 *   **链**：将多个组件按顺序组合，完成复杂任务（如问答、摘要）。
 *   **代理**：让LLM自主选择调用工具（如计算器、搜索引擎）来完成任务。
 
-简而言之，LangChain如同“乐高积木”，帮助开发者快速搭建基于LLM的智能应用，如知识库问答、文档分析、智能客服等，极大地提升了开发效率。
+简而言之，LangChain如同"乐高积木"，帮助开发者快速搭建基于LLM的智能应用，如知识库问答、文档分析、智能客服等，极大地提升了开发效率。
 """
